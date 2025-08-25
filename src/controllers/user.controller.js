@@ -7,7 +7,7 @@ import { ApiResponse } from "../utils/ApiResponse.js"; // API response wrapper
 const registerUser = asyncHandler( async (req, res) => {
     // Get user details from request body
     const {fullname, email, username, password } = req.body
-    console.log("email :", email);
+    //console.log("email :", email);
 
     // Validate all fields are present
     if (
@@ -17,16 +17,23 @@ const registerUser = asyncHandler( async (req, res) => {
     }
 
     // Check if user already exists
-    User.findOne({
+    const existedUser = awaitUser.findOne({
         $or: [{username}, {email}]
     })
     if (existedUser) {
         throw new ApiError(409, "User with email or username already exists.")
     }
+    console.log(req.files);
+    
 
     // Get avatar and cover image file paths
     const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage[0]?.path
+    //const coverImageLocalPath = req.files?.coverImage[0]?.path
+
+    let coverImageLocalPath;
+    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0){
+        coverImageLocalPath = req.files.coverImage[0].path;
+    }
 
     // Avatar is required
     if (!avatarLocalPath) {
