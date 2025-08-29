@@ -1,5 +1,5 @@
 import { Router } from "express"; // Express router
-import{ registerUser} from "../controllers/user.controller.js"; // User registration controller
+import{ loginUser, logoutUser, registerUser} from "../controllers/user.controller.js"; // User registration controller
 import { upload } from "../middlewares/multer.middleware.js"; // Multer middleware for file upload
 
 const router = Router() // Create router
@@ -18,5 +18,10 @@ router.route("/register").post(
     ]),
     registerUser // Registration handler
 )
+
+router.route("/login").post(loginUser)
+
+//secured route
+router.route("/logout").post(verifyJWt, logoutUser)
 
 export default router // Export router
